@@ -85,7 +85,7 @@ class GroupsController < ApplicationController
 
   # PATCH/PUT /groups/1
   def update
-    check_permission "admin"    
+    current_user_must_be_group_admin unless current_user.has_legacy_permission("admin")
     if @group.update(group_params)
       redirect_to @group, notice: 'Group was successfully updated.'
     else
