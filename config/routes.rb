@@ -57,7 +57,15 @@ Lilsis::Application.routes.draw do
 
   get '/groups/:id(/:group_tabs_selected_tab)' => 'groups#show'
 
-  resources :users, only: [:index]
+  resources :users, only: [:index], id: /[\w.]+/ do
+    member do
+      post 'confirm'
+    end
+    collection do
+      get 'admin'
+    end
+  end
+
   resources :lists, only: [:index]
 
   resources :entity do
@@ -99,6 +107,7 @@ Lilsis::Application.routes.draw do
       get 'edit_meta'
       post 'update_meta'
       post 'clone'
+      get 'edit_fullscreen'
     end
 
     collection do
@@ -122,6 +131,8 @@ Lilsis::Application.routes.draw do
   #   as: 'entity_name_search'
 
   get "/edits" => "edits#index"
+  get "/partypolitics" => "pages#partypolitics"
+  get "/oligrapher" => "maps#splash"
 
   match "*path", to: "errors#not_found", via: :all
 

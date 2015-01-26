@@ -28,11 +28,23 @@ class NetworkMap < ActiveRecord::Base
 
   def prepared_data
     hash = JSON.parse(data)
-    JSON.dump({ 
+    json = JSON.dump({ 
       entities: hash['entities'].map { |entity| self.prepare_entity(entity) },
       rels: hash['rels'].map { |rel| self.prepare_rel(rel) },
       texts: hash['texts'].present? ? hash['texts'].map { |text| self.prepare_text(text) } : []
     })
+    ERB::Util.json_escape(json)
+  end
+
+  def rels
+    hash = JSON.parse(data)
+    rel_ids = hash['rels'].map { |m| m['id'] }.select{ |id| id.to_i != 0 }
+    return [] if rel_ids.empty?
+    Relationship.where(id: rel_ids)
+  end
+
+  def references
+    rels.collect{ |r| r.references }.flatten.uniq(&:source).reject{ |ref| ref.name.blank? }.sort_by{ |ref| ref.updated_at }.reverse
   end
 
   def entity_type(entity)

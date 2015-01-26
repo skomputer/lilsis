@@ -1,12 +1,12 @@
 class MapsController < ApplicationController
-  before_action :set_map, except: [:index, :featured, :new, :create, :search]
-  before_filter :auth, except: [:index, :featured, :show, :raw]
+  before_action :set_map, except: [:index, :featured, :new, :create, :search, :splash]
+  before_filter :auth, except: [:index, :featured, :show, :raw, :splash]
   before_filter :enforce_slug, only: [:show]
 
   protect_from_forgery except: :create
 
   def index
-    maps = NetworkMap.order("updated_at DESC")
+    maps = NetworkMap.order("updated_at DESC, id DESC")
 
     unless current_user.present? and current_user.has_legacy_permission('admin')
       if current_user.present?
@@ -21,32 +21,39 @@ class MapsController < ApplicationController
   end
 
   def search
+    order = "updated_at DESC, id DESC"
     if user_signed_in?
       if current_user.has_legacy_permission('admin')
         @maps = NetworkMap.search(
           Riddle::Query.escape(params.fetch(:q, '')), 
-          order: "updated_at DESC"
+          order: order
         ).page(params[:page]).per(20)
       else
         @maps = NetworkMap.search(
           Riddle::Query.escape(params.fetch(:q, '')), 
-          order: "updated_at DESC",
+          order: order,
           with: { visible_to_user_ids: [0, current_user.sf_guard_user_id] }
         ).page(params[:page]).per(20)
       end
     else
       @maps = NetworkMap.search(
         Riddle::Query.escape(params.fetch(:q, '')), 
-        order: "updated_at DESC",
+        order: order,
         with: { visible_to_user_ids: [0] }
       ).page(params[:page]).per(20)      
     end
   end
 
   def featured
-    @maps = NetworkMap.featured.order("updated_at DESC").page(params[:page]).per(20)
+    @maps = NetworkMap.featured.order("updated_at DESC, id DESC").page(params[:page]).per(20)
     @featured = true
     render 'index'
+  end
+
+  def splash
+    @maps = NetworkMap.featured.order("updated_at DESC, id DESC").page(params[:page]).per(50)
+    @fcc_map = NetworkMap.find(101)
+    @ferguson_map = NetworkMap.find(259)
   end
 
   def show
@@ -95,6 +102,13 @@ class MapsController < ApplicationController
   def edit_meta
     check_owner
     check_permission 'importer'
+  end
+
+  def edit_fullscreen
+    check_owner
+    check_permission 'importer'
+    response.headers.delete('X-Frame-Options')
+    render layout: "fullscreen"
   end
 
   def update
