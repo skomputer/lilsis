@@ -10,11 +10,16 @@
   	<meta name="google-site-verification" content="<%= Lilsis::Application.config.google_site_verification %>" />
   <% end %>
 </head>
+
 <body class="<%= yield(:static_navbar).present? ? 'static' : '' %>">
 
 <% unless content_for? :hide_top %>
+    
 <div id="top">
 	<nav class="navbar navbar-default navbar-<%= yield(:static_navbar).present? ? 'static' : 'fixed' %>-top">
+	    <div id="giving-top">
+		<p class="text-center">Today is #GivingTuesday. Please <a href="http://public-accountability.org/donate/">make a tax-deductible donation</a> to support our efforts to develop and maintain LittleSis.org</p>
+	    </div>
 	<% if content_for? :full_width_top %>
 		<div id="top_content_full">
 	<% else %>
