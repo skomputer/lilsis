@@ -278,9 +278,15 @@ Lilsis::Application.routes.draw do
   #   as: 'entity_name_search'
 
   get "/edits" => "edits#index"
-  get "/partypolitics" => "pages#partypolitics"
   get "/oligrapher" => "maps#splash"
   get "/graph" => "graph#all"
+    
+  ##########
+  #  pages #
+  ##########
+
+  get "/partypolitics" => "pages#partypolitics"
+  get "/regime" => "pages#regime"
 
   ####### 
   # NYS #

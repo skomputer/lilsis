@@ -1,0 +1,76 @@
+<% content_for(:page_title, 'Trump Regime') %>
+<style>
+
+ body {
+     background-color:  #fee5d9;
+     font-family: Palatino,Palatino Linotype,Palatino LT STD,Book Antiqua,Georgia,serif;
+     color: #000;
+ }
+
+ .container {
+     max-width: 1280px; // regular ls pages are 970.
+ }
+
+ h1 {
+     font-size: 6em;
+     /* color: #fb6a4a; */
+     font-weight: 500;
+ }
+
+ h3 {
+     font-size: 4em;
+     font-weight: 700;
+ }
+ 
+ header {
+     width: 100%;
+     height: 20em;
+     position: static;
+     /* linear-gradient(#525252, #f7f7f7 ); */
+     /* background-color: #000; */
+ }
+
+</style>
+
+<div class="container">
+    <div class="row">
+	<div class="col-sm-12">
+	    <h1>Trump’s Billionaire Club</h1>
+	    <h2><small>A billionaire takeover of the U.S. government</small></h2>
+	</div>
+    </div>
+    
+    <div class="row">
+	<div class="col-sm-4">
+	    <p><em>Donald Trump’s vague campaign promises to take on the power structure – and some nervousness, from the power structure, about his erratic behavior and racist appeals – have given way to a remarkably close alliance between Trump and financial elites following his election.</em></p>
+	    <p><em>The stock market has rallied to all-time highs. Trump has tapped billionaires and mega-millionaires for cabinet seats and key appointments. Hedge fund managers and corporate CEOs are cheering Trump on from the sidelines, eager to reap the spoils from his favored economic policies – deregulation, privatization, and tax cuts. In essence, a new club of financial elites is forming, with Trump at the center, and varying levels of access and benefits conferred upon members.</em></p>
+	    <p><em>It will be important for journalists, organizers, and researchers to investigate and map these networks in the months and years ahead. Who belongs to this emergent club? What are their networks – political, business, investment, philanthropic, social? How are they benefiting – or poised to benefit – from Trump administration policies? This kind of research can lay the groundwork for challenges to the power structure that surrounds and enables Trump.</em></p>
+	</div>
+	<div class="col-sm-4 col-md-offset-2">
+	    <%= image_tag('Donald_Trump_meeting_President_Ronald_Reagan.jpg', class: 'img-responsive img-circle') %>
+	    <p><em>Trump and Reagan</em></p>
+	</div>
+    </div>
+    
+    <div class="row">
+	<div class="col-sm-8">
+	    <h3>Who's in the club?</h3>
+	</div>
+    </div>
+
+    <div class="row">
+	<div class="col-sm-3">
+	    <h2><%= link_to "John Paulson", @pauson.legacy_url  %></h2>
+	    <h4><strong><%= link_to "Read the report", "https://blog.littlesis.org/2016/12/06/trumps-billionaire-club-part-1-john-paulson/" %></strong></h4>
+	    <h2><small><%= @pauson.blurb %></small></h2>
+	    <%= image_tag( @pauson.featured_image_url, class: 'img-responsive img-rounded' ) %>
+	</div>
+    </div>
+    
+    <div class="row">
+    </div>
+    
+    
+    <div style="padding-top: 5em;"</div>
+</div>
+
