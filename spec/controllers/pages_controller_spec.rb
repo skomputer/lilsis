@@ -12,7 +12,11 @@ describe PagesController, type: :controller do
   end
   
   describe 'regime' do
-    before { get :regime }
+    before do 
+      expect(Entity).to receive(:find).with(15032).and_return(build(:person))
+      get :regime 
+    end
+    
     it { should render_template(:regime) }
     it { should respond_with(:success) }
   end
