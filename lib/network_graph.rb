@@ -40,7 +40,7 @@ class NetworkGraph
   def initialize(id, relationship_limit=DEFAULT_RELATIONSHIP_LIMIT)
     @entity = Entity.find(id)
     @relationship_limit = relationship_limit
-    @relationships = @entity.relationships.limit(@relationship_limit)
+    @relationships = relationships(id).limit(@relationship_limit)
     @related_entities_ids = @relationships.map { |r| entity_from_relationship(r).id }
   end
 
@@ -55,9 +55,9 @@ class NetworkGraph
       # search the other entity's relationships and
       # add the relationships of the other entity only if it's with 
       # an entity that is also connected to the initial entity (@entity)
-      other_entity.relationships.each do |r| 
-        other_entity_relationship_partner = entity_from_relationship(r, other_entity) 
-        links.add(link_hash r) if is_also_connected_to(other_entity_relationship_partner)
+      relationships(other_entity.id).each do |r|
+          other_entity_relationship_partner = entity_from_relationship(r, other_entity) 
+          links.add(link_hash r) if is_also_connected_to(other_entity_relationship_partner)
       end
     end
     { nodes: nodes, links: links }
@@ -66,7 +66,11 @@ class NetworkGraph
   private
 
   def is_also_connected_to(e)
-    @related_entities_ids.include?(e.id)
+    @related_entities_ids.include?(e.id) unless e.nil?
+  end
+
+  def relationships(id)
+    Relationship.includes(:entity, :related).where("is_deleted = 0 AND (entity1_id = ? OR entity2_id = ?)", id, id)
   end
 
   def link_hash(rel)

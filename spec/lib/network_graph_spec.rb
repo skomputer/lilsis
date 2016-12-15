@@ -1,15 +1,23 @@
 require 'rails_helper'
 
 describe NetworkGraph do
-
-  before(:all) { DatabaseCleaner.start } 
-  after(:all) { DatabaseCleaner.clean } 
+  before(:all) do 
+    Entity.skip_callback(:create, :after, :create_primary_ext)
+    DatabaseCleaner.start
+  end
+  after(:all) do 
+    Entity.set_callback(:create, :after, :create_primary_ext)
+    DatabaseCleaner.clean
+  end
 
   describe 'initialize' do
 
     before do
       @e = build(:person, id: rand(100) )
-      expect(Entity).to receive(:find).with(@e.id).and_return(@e).once
+      # expect(Entity).to receive(:includes).and_return(double(:find => @e))
+      expect(Entity).to receive(:find).and_return(@e)
+      expect(Relationship).to receive(:includes)
+                               .and_return(double(:where => double(:limit => [])))
     end
 
     it 'sets entity' do
@@ -32,11 +40,9 @@ describe NetworkGraph do
 
   describe 'graph' do
     before do
-      @e1 = build(:person, id: rand(1000),  name: 'e1')
-      @e2 = build(:person, id: rand(1000), name: 'e2')
-      @rel = build(:generic_relationship, entity: @e1, related: @e2, description1: 'connection', id: rand(100))
-      allow(@e1).to receive(:relationships).and_return( double(:limit => [@rel]))
-      allow(Entity).to receive(:find).with(@e1.id).and_return(@e1)
+      @e1 = create(:person, name: 'e1')
+      @e2 = create(:person, name: 'e2')
+      @rel = create(:generic_relationship, entity: @e1, related: @e2, description1: 'connection')
     end
 
     it 'returns hash with set of nodes and links' do
@@ -49,8 +55,8 @@ describe NetworkGraph do
       nodes = NetworkGraph.new(@e1.id).graph[:nodes]
       expect(nodes.length).to eql 2
       expect(nodes).to include({id: @e1.id, name: 'e1'})
-      expect(nodes).to include({id: @e2.id, name: 'e2'})
-    end
+      expect(nodes).to include({id: @e2.id, name: 'e2'}) 
+   end
 
     it 'generates correct link set' do
       links = NetworkGraph.new(@e1.id).graph[:links]
