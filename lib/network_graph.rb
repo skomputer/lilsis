@@ -4,7 +4,7 @@ This generates a graph of relationship data for the provided entity.
 It is intended to be used in a D3 graph, but it could be used other purposes.
 
 Use: 
-NetwokGraph.new(id).graph -> returns hash of relationships in this formate
+NetwokGraph.new(id).graph -> returns hash of relationships in this format
 
 By default it uses a relationship limit of 10, you can pass in a different limit or use nil for unlimited
 NetwokGraph.new(id, 50) -> limit of 50
@@ -22,7 +22,7 @@ NetworkGraph.new(id, nil) -> no limit
            {
               relationship_id: int,
               source: int (entity1_id),
-              target: int (rentity2_id)
+              target: int (entity2_id)
               title: str     
             }
          ]
@@ -40,19 +40,34 @@ class NetworkGraph
   def initialize(id, relationship_limit=DEFAULT_RELATIONSHIP_LIMIT)
     @entity = Entity.find(id)
     @relationship_limit = relationship_limit
+    @relationships = @entity.relationships.limit(@relationship_limit)
+    @related_entities_ids = @relationships.map { |r| entity_from_relationship(r).id }
   end
 
   def graph
-    nodes = [ entity_hash ]
-    links = Array.new
-    @entity.relationships.limit(@relationship_limit).each do |rel|
-      nodes.append(entity_from_relationship rel)
-      links.append(link_hash rel)
+    nodes = Set.new.add(entity_hash @entity)
+    links = Set.new
+    @relationships.each do |relationship|
+      links.add(link_hash relationship) # add relationship to link
+      other_entity = entity_from_relationship(relationship)
+      nodes.add(entity_hash other_entity) # add related entity to nodes
+      
+      # search the other entity's relationships and
+      # add the relationships of the other entity only if it's with 
+      # an entity that is also connected to the initial entity (@entity)
+      other_entity.relationships.each do |r| 
+        other_entity_relationship_partner = entity_from_relationship(r, other_entity) 
+        links.add(link_hash r) if is_also_connected_to(other_entity_relationship_partner)
+      end
     end
     { nodes: nodes, links: links }
   end
 
   private
+
+  def is_also_connected_to(e)
+    @related_entities_ids.include?(e.id)
+  end
 
   def link_hash(rel)
     {
@@ -63,12 +78,12 @@ class NetworkGraph
     }
   end
 
-  # Returns the *other* person in the relationship
-  def entity_from_relationship(rel)
-    entity_hash (rel.entity == @entity) ? rel.related : rel.entity
+  # Returns the *other* person/org in the relationship
+  def entity_from_relationship(rel, who_not_to_select=@entity)
+    return (rel.entity == who_not_to_select) ? rel.related : rel.entity
   end
 
-  def entity_hash(entity=@entity)
+  def entity_hash(entity)
     {
       id: entity.id,
       name: entity.name
