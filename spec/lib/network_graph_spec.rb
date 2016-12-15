@@ -39,20 +39,20 @@ describe NetworkGraph do
       allow(Entity).to receive(:find).with(@e1.id).and_return(@e1)
     end
 
-    it 'returns hash with array of nodes and links' do
+    it 'returns hash with set of nodes and links' do
       expect(NetworkGraph.new(@e1.id).graph).to be_a Hash
       expect(NetworkGraph.new(@e1.id).graph[:nodes]).to be_a Set
       expect(NetworkGraph.new(@e1.id).graph[:links]).to be_a Set
     end
 
-    it 'generates correct node array' do
+    it 'generates correct node set' do
       nodes = NetworkGraph.new(@e1.id).graph[:nodes]
       expect(nodes.length).to eql 2
       expect(nodes).to include({id: @e1.id, name: 'e1'})
       expect(nodes).to include({id: @e2.id, name: 'e2'})
     end
 
-    it 'generates correct link array' do
+    it 'generates correct link set' do
       links = NetworkGraph.new(@e1.id).graph[:links]
       expect(links.length).to eql 1
       expect(links).to include({relationship_id: @rel.id, source: @e1.id, target: @e2.id, title: 'connection'})
@@ -104,6 +104,17 @@ describe NetworkGraph do
       expect(@rel_ids.include?(@e4.id)).to be false
     end
     
+    context 'the graph for e4' do
+      let(:e4_graph) { NetworkGraph.new(@e4.id).graph  } 
+
+      it 'should have 2 nodes' do
+        expect(e4_graph[:nodes].length).to eql 2
+      end
+
+      it 'should have 1 link' do
+        expect(e4_graph[:links].length).to eql 1
+      end
+    end
     
   end
 
