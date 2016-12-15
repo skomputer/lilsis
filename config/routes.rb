@@ -287,6 +287,7 @@ Lilsis::Application.routes.draw do
 
   get "/partypolitics" => "pages#partypolitics"
   get "/regime" => "pages#regime"
+  get "/the_trump_club" => "pages#the_trump_club"
 
   ####### 
   # NYS #

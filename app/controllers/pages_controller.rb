@@ -10,4 +10,18 @@ class PagesController < ApplicationController
     render layout: "fullscreen"
   end
 
+  def the_trump_club
+    @trump = Entity.find(15108)
+    @graph = trump_network_graph
+    render layout: "fullscreen"
+  end
+
+  private
+
+  def trump_network_graph
+    Rails.cache.fetch('trump_network_graph', expires_in: 2.hours) do
+      NetworkGraph.new(15108, nil).graph
+    end
+  end
+
 end
