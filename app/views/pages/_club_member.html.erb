@@ -1,0 +1,6 @@
+<h2><%= link_to entity.name, entity.legacy_url  %></h2>
+<h4><strong><%= link_to "Read the report", report_link %></strong></h4>
+<div style="height: 7em">
+    <h2><small><%= entity.blurb %></small></h2>
+</div>
+<%= image_tag( entity.featured_image_url, class: 'img-responsive img-rounded' ) %>
