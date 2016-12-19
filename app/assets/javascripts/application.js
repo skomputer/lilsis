@@ -23,7 +23,7 @@
 //= require datatables-bootstrap
 //= require bootsy
 //= require bootstrap-datepicker
-//= require twitter/typeahead
+//= require typeahead.bundle.js
 //= require hogan-3.0.1.js
 //= require d3.v4.min.js
 //= require_tree ./common
