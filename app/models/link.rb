@@ -16,4 +16,20 @@ class Link < ActiveRecord::Base
       hash
     end
   end
+
+  
+  # NOTE: Link might not be the best model to stick this on. It should probably go on entity, but entity is such a crowded model...
+  # int | <Entity> -> [ <Entity> ]
+  # Returns entities that are within one and two degrees away from the provided entity
+  def self.entity_network(entity, return_as_entity=false)
+    one_degree_ids = entity2_ids( entity.is_a?(Numeric) ? entity : entity.id)
+    one_and_two_degree_ids = (entity2_ids(one_degree_ids) + one_degree_ids).uniq
+    return_as_entity ? Entity.find(one_and_two_degree_ids) : one_and_two_degree_ids
+  end
+
+  #  Int or [int] -> [int]
+  private_class_method  def self.entity2_ids(ids)
+    where(entity1_id: ids).map(&:entity2_id)
+  end
+    
 end
