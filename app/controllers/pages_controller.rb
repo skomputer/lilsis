@@ -7,6 +7,7 @@ class PagesController < ApplicationController
 
   def regime
     @pauson = Entity.find(15032)
+    @schwarzman = Entity.find(14997)
     render layout: "fullscreen"
   end
 

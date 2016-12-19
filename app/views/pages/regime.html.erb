@@ -60,16 +60,20 @@
 
     <div class="row">
 	<div class="col-sm-3">
-	    <h2><%= link_to "John Paulson", @pauson.legacy_url  %></h2>
-	    <h4><strong><%= link_to "Read the report", "https://blog.littlesis.org/2016/12/06/trumps-billionaire-club-part-1-john-paulson/" %></strong></h4>
-	    <h2><small><%= @pauson.blurb %></small></h2>
-	    <%= image_tag( @pauson.featured_image_url, class: 'img-responsive img-rounded' ) %>
+	    <%= render partial: 'club_member', locals: {entity: @pauson, report_link: "https://blog.littlesis.org/2016/12/06/trumps-billionaire-club-part-1-john-paulson/"} %>
 	</div>
-	<div class="col-sm-6 col-sm-offset-2">
-	    <p class="top-3em" >Stay Tuned! More reports are coming soon.</p>
+	<div class="col-sm-3 col-sm-offset-1">
+	    <%= render partial: 'club_member', locals: {entity: @schwarzman, report_link: "https://blog.littlesis.org/2016/12/15/trumps-billionaire-club-part-2-stephen-schwarzman/"} %>
 	</div>
     </div>
     
+    <div class="row top-3em">
+	<h3>The Trump Network</h3>
+	<div class="col-sm-12 text-center">
+	    <iframe height="600" width="800" scrolling="no" style="border: 0px; overflow: hidden;" src="https://littlesis.org/maps/1799-a-billionaire-coup-d-etat/embedded"></iframe>
+	</div>
+    </div>
+
     <div class="row">
 	<div class="col-sm-12">
 	    <h3>Connect the dots yourself!</h3>

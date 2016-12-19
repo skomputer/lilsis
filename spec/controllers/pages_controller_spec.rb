@@ -14,6 +14,7 @@ describe PagesController, type: :controller do
   describe 'regime' do
     before do 
       expect(Entity).to receive(:find).with(15032).and_return(build(:person))
+      expect(Entity).to receive(:find).with(14997).and_return(build(:person))
       get :regime 
     end
     
