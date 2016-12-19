@@ -73,6 +73,10 @@ describe RelationshipsController, type: :controller do
         expect { post_request }.to change{Relationship.count}.by(1)
       end
 
+      it 'creates two links' do
+        expect { post_request }.to change{Link.count}.by(2)
+      end
+
       it 'should create a new Reference' do
         expect { post_request }.to change{Reference.count}.by(1)
       end
