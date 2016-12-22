@@ -29,16 +29,20 @@ describe Link, type: :model do
     end
   end
 
+  def setup_network
+    @e1 = create(:corp, name: 'e1')
+    @e2 = create(:corp, name: 'e2')
+    @e3 = create(:corp, name: 'e3')
+    @e4 = create(:corp, name: 'e4')
+    @rel_between_1_2 = Relationship.create!(entity1_id: @e1.id, entity2_id: @e2.id, category_id: Relationship::DONATION_CATEGORY)
+    @rel_between_2_3 = Relationship.create!(entity1_id: @e2.id, entity2_id: @e3.id, category_id: Relationship::DONATION_CATEGORY)
+    @rel_between_3_4 = Relationship.create!(entity1_id: @e3.id, entity2_id: @e4.id, category_id: Relationship::DONATION_CATEGORY)
+  end
+
   describe 'Entity Network' do
     before(:all) do
       DatabaseCleaner.start
-      @e1 = create(:corp, name: 'e1')
-      @e2 = create(:corp, name: 'e2')
-      @e3 = create(:corp, name: 'e3')
-      @e4 = create(:corp, name: 'e4')
-      @rel_between_1_2 = Relationship.create!(entity1_id: @e1.id, entity2_id: @e2.id, category_id: Relationship::DONATION_CATEGORY)
-      @rel_between_2_3 = Relationship.create!(entity1_id: @e2.id, entity2_id: @e3.id, category_id: Relationship::DONATION_CATEGORY)
-      @rel_between_3_4 = Relationship.create!(entity1_id: @e3.id, entity2_id: @e4.id, category_id: Relationship::DONATION_CATEGORY)
+      setup_network
     end
 
     after(:all) { DatabaseCleaner.clean }
@@ -47,9 +51,11 @@ describe Link, type: :model do
       it 'returns list of entity ids one and two degrees away from provided entity' do
         expect(Set.new(Link.entity_network_simple(@e1.id))).to eql Set.new([@e1.id, @e2.id, @e3.id])
       end
+
       it 'returns list if provided <entity> ' do
         expect(Set.new(Link.entity_network_simple(@e1))).to eql Set.new([@e1.id, @e2.id, @e3.id])
       end
+
       it 'returns list of entity models' do
         expect(Set.new(Link.entity_network_simple(@e1, true))).to eql Set.new([@e1, @e2, @e3])
       end
@@ -58,8 +64,8 @@ describe Link, type: :model do
     describe 'entity_network' do
       def e2_hash
         { @e2.id => {
-                entity: { id: @e2.id, blurb: @e2.blurb, name: @e2.name, primary_ext: @e2.primary_ext },
-                links: [{ degree: 1, relationship_id: @rel_between_1_2.id, related_through: nil }]
+          entity: { id: @e2.id, blurb: @e2.blurb, name: @e2.name, primary_ext: @e2.primary_ext },
+          links: [{ degree: 1, relationship_id: @rel_between_1_2.id, related_through: nil }]
         } }
       end
 
@@ -108,5 +114,11 @@ describe Link, type: :model do
         expect(Link.entity_network(@e1)).to eql e2_hash.merge(e3_hash)
       end
     end
+  end # end describe 'Entity Network'
+
+  describe 'connection_between' do
+    before { setup_network }
+
+    
   end
 end

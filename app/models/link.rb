@@ -85,6 +85,38 @@ class Link < ActiveRecord::Base
     network_entities
   end
 
+  # if directly conneted it returns
+  # {
+  #    degree: 1,
+  #    relationship_id: 123,
+  #  }
+  # if connected through other enties it returns an array of links
+  # [ {
+  #      degree: 2,
+  #      relationship_id: 123,
+  #      secondary_relationship_id: 456
+  #   } ]
+  # returns false if there is no link between
+  def self.connection_between(id1, id2)
+    link = link_between(id1,id2)
+    if link.present?
+      { degree: 1, relationship_id: link.relationship_id }
+    else
+      links = []
+      includes(:related).where(entity1_id: id1).map(&:related).each do |entity|
+        unless entity.is_deleted
+          l = link_between(entity.id, id2)
+          links << { degree: 2, realtionship_id: l.relationship_id } if l.present?
+        end
+      end
+      links.empty? ? false : links
+    end
+  end
+
+  private_class_method def self.link_between(id1, id2)
+    where(entity1_id: id1, entity2_id: id2).last
+  end
+
   private_class_method def self.link_hash(link, degree, related_through = nil)
     {
       degree: degree,

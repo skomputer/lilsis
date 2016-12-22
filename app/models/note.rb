@@ -16,7 +16,8 @@ class Note < ActiveRecord::Base
 	has_many :entities, through: :note_entities, inverse_of: :notes
 
 	has_many :note_relationships, inverse_of: :note, dependent: :destroy
-	has_many :relationships, through: :note_relationships, inverse_of: :notes
+	# has_many :relationships, through: :note_relationships, inverse_of: :notes
+	has_many :relationships, through: :note_relationships
 
 	has_many :note_lists, inverse_of: :note, dependent: :destroy
 	has_many :lists, through: :note_lists, inverse_of: :notes
