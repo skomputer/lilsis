@@ -6,10 +6,32 @@
 
     <div class="spacer"></div>
 
+    <% if current_user.id == 2088 %>
+	
+	    <pre>
+
+      .                      .    *+*+*   +             *       .---,
+               }       *           |||||       .---.            /#    `\
+     .--.     {            )     @@.@.@.@@    /     \  .        |      |
+    /    \     }          (      |'='='='|    |#     |          '.   _/
+    |#   |         +            @@.@.@.@.@@   '._ _,/             `(^
+    \_ _.'   +          *   )   |'='='='='|     (^            +     )
+     (^   *       .            @@.@.@.@.@.@@     )        *        (
+      )  _ _  ___  ___  ___+__  __  ___  _  ___  ___+ _ _  ___  ___ __ *__
+     (  | | |/   \|   \|   \\ \/ / | _ \| ||   \|   || | ||   \/   \\ \/ /
+      ) |   || - || -_/| -_/ \  /  | _ <| || - / | | |   || | || - | \  /
+        |_|_||_|_||_|  |_|   /_/   |___/|_||_._\ |_| |_|_||___/|_|_| /_/
+
+            </pre>
+	    <div class="alert alert-success">HAPPY BRITHDAY GIN!!</div>
+        <% end %>
+
 	<% if notice %>
 	    <div class="alert alert-success"><%= notice %></div>
 	<% end %>
 	
+	
+
 	<% if current_user.sign_in_count < 10 %>
 	    <%= dismissable_alert('dashboard_alert') do %>
 		Need help using LittleSis? Get help for <%= link_to 'beginner', "/beginnerhelp" %> or <%= link_to 'advanced', "/advancedhelp" %> users.
