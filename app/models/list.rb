@@ -7,6 +7,8 @@ class List < ActiveRecord::Base
 
   has_paper_trail
   
+  belongs_to :user, foreign_key: "creator_user_id", inverse_of: :lists
+
   has_many :list_entities, inverse_of: :list, dependent: :destroy
   has_many :entities, through: :list_entities
   has_many :images, through: :entities
@@ -33,6 +35,9 @@ class List < ActiveRecord::Base
 
   validates_presence_of :name
 
+  scope :public_scope, -> { where(is_private: false) }
+  scope :private_scope, -> { where(is_private: true) }
+
   def destroy
     soft_delete
   end
@@ -53,6 +58,14 @@ class List < ActiveRecord::Base
     url = "/list/" + id.to_s + "/" + name_to_legacy_slug
     url += "/" + action if action.present?
     url
+  end
+
+  def user_can_access?(user = nil)
+    return true unless is_private?
+    user_id = user if user.is_a? Integer
+    user_id = user.id if user.is_a? User
+    return false unless user_id.present?
+    creator_user_id == user_id
   end
 
   def legacy_network_url

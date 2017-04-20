@@ -16,6 +16,7 @@ Lilsis::Application.routes.draw do
     patch '/users' => 'users/registrations#update'
     put '/users' => 'users/registrations#update'
     delete '/users' => 'users/registrations#destroy'
+    post '/users/api_token' => 'users/registrations#api_token'
   end
 
   get '/join/success' => 'users#success'
@@ -24,6 +25,8 @@ Lilsis::Application.routes.draw do
   get '/home' => 'home#index'
   get '/contact' => 'home#contact'
   post '/contact' => 'home#contact'
+  get '/flag' => 'home#flag'
+  post '/flag' => 'home#flag'
 
   get "/admin" => "admin#home"
   post "/admin/clear_cache" => "admin#clear_cache"
@@ -44,7 +47,7 @@ Lilsis::Application.routes.draw do
   end
 
   get '/hubs/:id(/:campaign_tabs_selected_tab)' => 'campaigns#show'
-
+  
   resources :groups do
     member do
       get 'notes'
@@ -134,6 +137,7 @@ Lilsis::Application.routes.draw do
       post 'match_donation'
       post 'unmatch_donation'
       get 'contributions'
+      get 'references'
       get 'potential_contributions'
       get 'edit_twitter'
       post 'add_twitter'  
@@ -161,6 +165,12 @@ Lilsis::Application.routes.draw do
       get 'search_by_name', as: 'name_search'
       get 'search_field_names', as: 'field_name_search'
       get 'next_twitter'
+    end
+  end
+
+  resources :aliases, only: [:create, :destroy, :update] do
+    member do
+      patch 'make_primary'
     end
   end
 
@@ -234,7 +244,7 @@ Lilsis::Application.routes.draw do
 
   resources :references, only: [:create, :destroy]
   get "/references/recent" => "references#recent"
-  
+  get "/references/entity" => "references#entity"
 
   get "/search" => "search#basic"
   get "/search/entity" => "search#entity_search"
@@ -242,6 +252,7 @@ Lilsis::Application.routes.draw do
   get "/home/notes" => "home#notes"
   get "/home/groups" => "home#groups"
   get "/home/maps" => "home#maps"
+  get "/home/lists" => "home#lists"
   get "/home/dashboard" => "home#dashboard"
   post "/home/dismiss",
     controller: 'home',
@@ -255,7 +266,7 @@ Lilsis::Application.routes.draw do
 
   get "/edits" => "edits#index"
   get "/partypolitics" => "pages#partypolitics"
-  get "/oligrapher" => "maps#splash"
+  get "/oligrapher" => "pages#oligrapher_splash"
   get "/graph" => "graph#all"
 
 
@@ -278,6 +289,32 @@ Lilsis::Application.routes.draw do
   #########
 
   get '/tools/bulk/relationships' => "tools#bulk_relationships"
+
+  #########
+  #  API  #
+  #########
+
+  get '/api' => 'api/api#index'
+
+  namespace :api do
+    resources :entities, only: [:show] do
+      member do
+        get 'relationships'
+        get 'extensions'
+      end
+    end
+  end
+
+  #############
+  #  Toolkit  #
+  #############
+
+  get '/toolkit' => 'toolkit#index'
+  get '/toolkit/new' => 'toolkit#new_page'
+  post '/toolkit/create_new_page' => 'toolkit#create_new_page'
+  get '/toolkit/:toolkit_page/edit' => 'toolkit#edit'
+  patch '/toolkit/:id' => 'toolkit#update', :as => 'toolkit_update'
+  get '/toolkit/:toolkit_page' => 'toolkit#display', :as => 'toolkit_display'
 
   match "*path", to: "errors#not_found", via: :all
 

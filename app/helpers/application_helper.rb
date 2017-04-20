@@ -83,15 +83,19 @@ module ApplicationHelper
     raw "<div class='alert alert-success'>#{notice}</div>" if notice
   end
 
-  def dismissable_alert(id, &block)
-    unless session[:dismissed_alerts].kind_of?(Array)
-      session[:dismissed_alerts] = []
-    end
+  def dismissable_alert(id, class_name = 'alert-info', &block)
+    session[:dismissed_alerts] = [] unless session[:dismissed_alerts].kind_of?(Array)
 
     unless session[:dismissed_alerts].include? id
-      content_tag("div", id: id, class: "alert alert-info alert-dismissable") do
-        content_tag("button", raw("&times;"), class: "close", 'data-dismiss-id' => id) + capture(&block)
+      content_tag('div', id: id, class: "alert #{class_name} alert-dismissable") do
+        content_tag('button', raw('&times;'), class: 'close', 'data-dismiss-id' => id) + capture(&block)
       end
+    end
+  end
+
+  def dashboard_panel(heading = '', &block)
+    content_tag('div', class: 'panel panel-default') do
+      content_tag('div', heading, class: 'panel-heading') + content_tag('div', class: 'panel-body') { capture(&block) }
     end
   end
 
@@ -159,5 +163,11 @@ module ApplicationHelper
   def entity_link(entity, name = nil, action = nil, html_class: nil)
     name ||= entity.name
     link_to name, entity.legacy_url(action), class: html_class
+  end
+
+  def references_select(references, selected_id = nil)
+    return nil if references.nil?
+    options_array = references.collect { |r| [r.name, r.id] }
+    select_tag('reference_existing', options_for_select(options_array, selected_id), include_blank: true, class: 'selectpicker', name: 'reference[reference_id]')
   end
 end

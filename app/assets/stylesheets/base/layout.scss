@@ -28,13 +28,14 @@ body {
   }
 }
 
-a {
-  text-decoration: none;
-  /* color: $link_blue; */
-
-  &:hover {
-    text-decoration: underline;
-  }
+  a {
+      text-decoration: none;
+      color: $link_blue;
+      
+      &:hover {
+	  text-decoration: underline;
+	  color: $link_blue_hover;
+      }
 }
 
 #top {
@@ -71,7 +72,10 @@ a {
 #brand {
   margin-top: 12px;
   margin-right: 1em;
-  img { width: 180px; }
+  img { 
+    width: 180px; 
+    cursor: pointer;
+  }
 }
 
 #menu {

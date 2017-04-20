@@ -32,12 +32,15 @@
 /log/development.sphinx.pid
 
 # Ignore sphinx config
-/config/production.sphinx.conf
-/config/development.sphinx.conf
+config/production.sphinx.conf
+config/development.sphinx.conf
 public/assets/*
 
 # generated test error files
 spec/testdata/*_errors.txt
+
+# coverage files
+coverage
 
 # os data
 data/cands/
